@@ -8,7 +8,7 @@
         <input type="text" v-model="searchStr" placeholder="поиск...">
         <Icons :IconsData="{ iconName: 'user-plus', actionParams: true }" @onClick="addUser"/>
       </div>
-      <div class="user" v-for="user in filterData(searchStr)" :key="user.id">
+      <div class="user" v-for="user in sortUsers(upDown)" :key="user.id">
         <div class="user-photo">
           <img v-if="user.avatar" :src="user.avatar" alt="" srcset="">
           <img v-else src="@/assets/user.png" alt="" srcset="">
@@ -62,7 +62,7 @@ const userFullName = (id: number | undefined): string => {
 };
 
 const filterData = (searchStr: string): Array<Users> => {
-  if (!sortUsers(upDown.value)) return [];
+  if (!store.getters.users) return [];
   return store.getters.users?.filter((itm: any) => {
     for (const key in itm) {
       if (!searchStr) {
@@ -79,7 +79,7 @@ const filterData = (searchStr: string): Array<Users> => {
 }
 
 const sortUsers = (upDown: boolean): Array<Users> => {  
-  return store.getters.users?.sort((a: any, b: any) => {
+  return filterData(searchStr.value).sort((a: any, b: any) => {
     const nameA = a.last_name?.toLowerCase();
     const nameB = b.last_name?.toLowerCase();
     if(upDown){
